@@ -144,6 +144,41 @@ public class FirstTest {
                 article_title
         );
     }
+    @Test
+    public void wordsAssertInSearch()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find search wikipedia input",
+                5
+        );
+
+        WebElement search_element = waitForElementPresent(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search text",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        WebElement list_element = waitForElementPresent(
+                By.id("org.wikipedia:id/page_list_item_title"),
+                "Cannot find text in list item",
+                15
+        );
+
+        String list_text = list_element.getAttribute("text");
+
+        Assert.assertEquals(
+                "We don't see text!",
+                "Java",
+                list_text
+        );
+    }
 
 
 
