@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -29,7 +30,7 @@ public class FirstTest {
         capabilities.setCapability("appActivity",".main.MainActivity");
         capabilities.setCapability("app","/Users/user/Desktop/JavaAppiumAutomation/apks/org.wikipedia.apk");
 
-        driver = new AndroidDriver(new URL("http://10.7.201.20:4723/wd/hub"),capabilities);
+        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"),capabilities);
     }
 
     @After
@@ -178,6 +179,23 @@ public class FirstTest {
                 "Java",
                 list_text
         );
+        List<WebElement> webElementList = driver.findElementsById("org.wikipedia:id/page_list_item_container");
+        Integer countOfitems = webElementList.size();
+        Assert.assertTrue(countOfitems > 1
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find X to cancel search",
+                5
+        );
+
+        WebElement search_result = waitForElementPresent(
+                By.id("org.wikipedia:id/search_empty_image"),
+                "Search results are still exist!",
+                15
+        );
+
     }
 
 
