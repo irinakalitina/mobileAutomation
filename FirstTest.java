@@ -155,34 +155,18 @@ public class FirstTest {
                 5
         );
 
+        String value = "Java";
         waitForElementAndSendKeys(
                 By.xpath("//*[contains(@text,'Search…')]"),
-                "Java",
+                value.toLowerCase(),
                 "Cannot find search input",
                 5
         );
-//        waitForElementPresent(
-//                By.id("org.wikipedia:id/page_list_item_title"),
-//                "Cannot find text in list item",
-//                15
-//        );
-//
-//        String list_text = list_element.getAttribute("text");
-//
-//        Assert.assertEquals(
-//                "We don't see text!",
-//                "Java",
-//                list_text
-//        );
-//        List<WebElement> webElementList = driver.findElementsById("org.wikipedia:id/page_list_item_container");
-//        Integer countOfitems = webElementList.size();
-//        Assert.assertTrue("Less than 1 items!",
-//                countOfitems > 1
-//                );
-        List<WebElement> webElementList = driver.findElementsById("org.wikipedia:id/page_list_item_container");
+
+        List<WebElement> webElementList = driver.findElementsById("org.wikipedia:id/page_list_item_title");
         for(WebElement element: webElementList) {
             Assert.assertTrue("List doesn't contain Java",
-                    element.getText().contains("java")
+                    element.getText().toLowerCase().contains(value.toLowerCase())
             );
         }
 
