@@ -109,17 +109,10 @@ public class FirstTest {
                 5
         );
 
-        WebElement search_element = waitForElementPresent(
+        checkSearchText(
                 By.id("org.wikipedia:id/search_src_text"),
                 "Cannot find search text",
-                5
-        );
-        String search_text = search_element.getAttribute("text");
-
-        Assert.assertEquals(
-                "We don't see text search!",
-                "Search1…",
-                search_text
+                10
         );
 
         waitForElementAndSendKeys(
@@ -189,7 +182,7 @@ public class FirstTest {
         List<WebElement> webElementList = driver.findElementsById("org.wikipedia:id/page_list_item_container");
         for(WebElement element: webElementList) {
             Assert.assertTrue("List doesn't contain Java",
-                    element.getText().contains("Java")
+                    element.getText().contains("java")
             );
         }
 
@@ -276,10 +269,15 @@ public class FirstTest {
                 "Cannot find button to open article options",
                 5
         );
+        this.waitForElementPresent(
+                By.xpath("//*[@text='Add to reading list']"),
+                "Add to reading list is not found",
+                10
+        );
 
         waitForElementAndClick(
-//                By.xpath("//*[@text='Add to reading list']"),
-                By.xpath("//*[contains(@text,'Add to reading list')]"),
+                By.xpath("//*[@text='Add to reading list']"),
+//                By.xpath("//*[contains(@text,'Add to reading list')]"),
                 "Cannot find option to add article to reading list",
                 5
         );
@@ -306,7 +304,7 @@ public class FirstTest {
         );
 
         waitForElementAndClick(
-                By.xpath("//*[@text, 'OK']"),
+                By.id("android:id/button1"),
                 "Cannot press the OK button",
                 5
         );
@@ -323,19 +321,30 @@ public class FirstTest {
                 5
         );
 
+        this.waitForElementPresent(
+                By.xpath("//*[@text='" + name_of_folder + "']"),
+                "created folder is not found",
+                10
+        );
         waitForElementAndClick(
-                By.xpath("//*[@text = '" + name_of_folder +"']"),
-                "Cannot created folder",
+                By.xpath("//*[@text='" + name_of_folder + "']"),
+                "Cannot find created folder",
                 5
         );
 
+        this.waitForElementPresent(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Saved article is not found",
+                10
+        );
+
         swipeElementToLeft(
-                By.xpath("//*[@text, 'Java (programming language)']"),
+                By.xpath("//*[@text='Java (programming language)']"),
                 "Cannot find saved article"
         );
 
         waitForElementNotPresent(
-                By.xpath("//*[@text, 'Java (programming language)']"),
+                By.xpath("//*[@text='Java (programming language)']"),
                 "Cannot delete saved article",
                 5
         );
@@ -349,6 +358,22 @@ public class FirstTest {
         wait.withMessage(error_message + "\n");
         return wait.until(
                 ExpectedConditions.presenceOfElementLocated(by)
+        );
+    }
+
+    private void checkSearchText(By by, String error_message, long timeoutInSeconds)
+    {
+        WebElement search_element = waitForElementPresent(
+                by,
+                error_message,
+                10);
+
+        String search_text = search_element.getAttribute( "text");
+
+        Assert.assertEquals(
+                "We see the unexpected text!",
+                "Search…",
+                search_text
         );
     }
 
@@ -431,7 +456,7 @@ public class FirstTest {
         int left_x = element.getLocation().getX();
         int right_x = left_x + element.getSize().getWidth();
         int upper_y = element.getLocation().getY();
-        int lower_y = upper_y + element.getSize().getWidth();
+        int lower_y = upper_y + element.getSize().getHeight();
         int middle_y = (upper_y + lower_y) / 2;
 
         TouchAction action = new TouchAction(driver);
