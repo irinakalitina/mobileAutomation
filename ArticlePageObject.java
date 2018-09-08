@@ -14,7 +14,9 @@ public class ArticlePageObject extends MainPageObject {
     ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
     MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
     MY_LIST_OK_BUTTON = "android:id/button1",
-    CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']";
+    CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']",
+    JAVA_ARTICLE = "//*[@text='Java (programming language)']",
+    JAVASCRIPT_ARTICLE = "//*[@text='JavaScript']";
 
 
     public ArticlePageObject(AppiumDriver driver)
@@ -94,5 +96,27 @@ public class ArticlePageObject extends MainPageObject {
                 "Cannot close article, cannot find X link",
                 5
         );
+    }
+
+    public void assertResultAfterSwipeArticle()
+    {
+        this.waitForElementNotPresent(
+                By.xpath(JAVA_ARTICLE),
+                "Cannot delete saved article",
+                5
+        );
+
+        this.waitForElementPresent(
+                By.xpath(JAVASCRIPT_ARTICLE),
+                "Saved article is not found",
+                10
+        );
+
+        this.waitForElementAndClick(
+                By.xpath(JAVASCRIPT_ARTICLE),
+                "Javascript article is not found",
+                15
+        );
+
     }
 }
