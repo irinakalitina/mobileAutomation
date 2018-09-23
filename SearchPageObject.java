@@ -13,6 +13,7 @@ abstract public class SearchPageObject extends MainPageObject {
             SEARCH_INIT_ELEMENT,
             SEARCH_INPUT,
             SEARCH_CANCEL_BUTTON,
+            SEARCH_MINI,
             SEARCH_RESULT_BY_SUBSTRING_TPL,
             SEARCH_RESULT_ELEMENT,
             SEARCH_EMPTY_RESULT_ELEMENT,
@@ -53,6 +54,11 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void typeSearchLine(String search_line) {
         this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input", 5);
+    }
+
+    public void clearSearchInput() {
+        this.waitForElementAndClick(SEARCH_MINI,"Cannot find and clear search mini button", 10);
+
     }
 
     public void waitForSearchResult(String substring) {

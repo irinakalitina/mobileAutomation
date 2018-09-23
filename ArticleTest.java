@@ -1,11 +1,14 @@
 package Tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.UI.ArticlePageObject;
-import lib.UI.MyListPageObject;
+import lib.UI.MyListsPageObject;
 import lib.UI.NavigationUI;
 import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
+import lib.UI.factories.MyListsPageObjectFactory;
+import lib.UI.factories.NavigationUIFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
@@ -42,50 +45,68 @@ public class ArticleTest extends CoreTestCase
         ArticlePageObject.swipeToFooter();
 
     }
+    private static final String name_of_folder = "Learning programming";
+    private static final String article_title2 = "Javascript";
 
     @Test
-    public void saveTwoArticlesToMyList() {
+    public void testSaveTwoArticlesToMyList() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         ArticlePageObject.waitForTitleElement();
-        String name_of_folder = "Learning programming";
-        ArticlePageObject.addArticleToMyList(name_of_folder);
+
+        if (Platform.getInstance().isAndroid()) {
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+        }else {
+            ArticlePageObject.addArticleToMySaved();
+        }
+
+        ArticlePageObject.closeSyncWindow();
         ArticlePageObject.closeArticle();
 
         SearchPageObject.initSearchInput();
+        if (Platform.getInstance().isIOS()) {
+            SearchPageObject.clearSearchInput();
+        }
         SearchPageObject.typeSearchLine("Javascript");
-        SearchPageObject.waitForSearchResult("Programming language");
+        SearchPageObject.clickByArticleWithSubstring("Programming language");
 
         ArticlePageObject.waitForTitleElement();
-        ArticlePageObject.addArticleToMyList(name_of_folder);
+        String article_title = ArticlePageObject.getArticleTitle();
+        ArticlePageObject.addArticleToMySavedFolder(name_of_folder);
         ArticlePageObject.closeArticle();
 
-        NavigationUI NavigationUI = new NavigationUI(driver);
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
         NavigationUI.clickMyLists();
 
-        MyListPageObject MyListPageObject = new MyListPageObject(driver);
-        String article_title = ArticlePageObject.getArticleTitle();
-        MyListPageObject.openFolderByName(name_of_folder);
-        MyListPageObject.swipeByArticleToDelete(article_title);
+        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
+
+        if (Platform.getInstance().isAndroid()) {
+            MyListsPageObject.openFolderByName(name_of_folder);
+        }
+
+        MyListsPageObject.swipeByArticleToDelete(article_title);
         ArticlePageObject.assertResultAfterSwipeArticle();
 
-        ArticlePageObject.waitForTitleElement();
+        if(Platform.getInstance().isAndroid()) {
+            ArticlePageObject.waitForTitleElement();
 
-        assertEquals(
-                "We see the unexpected title!",
-                "Java (programming language)",
-                article_title
-        );
+            assertEquals("We see the unexpected title!",
+                    "Java (programming language)",
+                    article_title);
+        } else {
+            ArticlePageObject.waitForTitleElement();
+            ArticlePageObject.assertTitleElementPresent(article_title2, "Article title is not the '" + article_title2 + "'");
+        }
 
     }
 
     @Test
-    public void assertElementPresent() {
+    public void testAssertElementPresent() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
 
